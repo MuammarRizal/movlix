@@ -1,16 +1,8 @@
 <template>
   <v-container fluid class="pa-0">
-    <v-sheet
-      height="400"
-      class="d-flex flex-column align-center justify-center text-center"
-      :style="{
-        backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }"
-    >
+    <v-parallax src="https://cdn.vuetifyjs.com/images/parallax/material.jpg">
       <div
-        class="bg-black bg-opacity-50 w-100 h-100 d-flex flex-column align-center justify-center px-4"
+        class="w-100 h-100 d-flex flex-column align-center justify-center px-4"
       >
         <h1 class="text-h3 text-white font-weight-bold mb-2">
           {{ title }}
@@ -21,7 +13,17 @@
 
         <slot />
       </div>
-    </v-sheet>
+    </v-parallax>
+    <!-- <v-sheet
+      height="400"
+      class="d-flex flex-column align-center justify-center text-center"
+      :style="{
+        backgroundImage: `url(${background})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }"
+    >
+    </v-sheet> -->
   </v-container>
 </template>
 
