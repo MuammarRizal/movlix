@@ -1,19 +1,19 @@
 <template>
   <v-container fluid>
-    <h2 class="mb-4">Latest Trailers</h2>
+    <h2 class="mb-4 ms-14">Latest Trailers</h2>
     <v-slide-group show-arrows>
       <v-slide-group-item v-for="(trailer, i) in trailers" :key="i">
         <v-card class="ma-2 hover-card" width="320">
           <!-- Thumbnail -->
           <v-img
-            :src="`https://img.youtube.com/vi/${trailer.youtubeId}/hqdefault.jpg`"
+            :src="`${API_IMAGE_URL_W500}${trailer.logo_path}`"
             height="180"
             cover
           />
 
           <!-- Judul film -->
           <v-card-text>
-            <h3 class="text-sm font-bold">{{ trailer.title }}</h3>
+            <h3 class="text-sm font-bold">{{ trailer.provider_name }}</h3>
           </v-card-text>
 
           <!-- Tombol play -->
@@ -49,29 +49,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { API_IMAGE_URL_W500 } from "@/utils/const";
+import { inject, ref } from "vue";
 
 const dialog = ref(false);
 const currentTrailer = ref(null);
 
-const trailers = [
-  {
-    title: "Inception Trailer",
-    youtubeId: "8hP9D6kZseM",
-  },
-  {
-    title: "The Batman Trailer",
-    youtubeId: "mqqft2x_Aa4",
-  },
-  {
-    title: "Interstellar Trailer",
-    youtubeId: "zSWdZVtXT7E",
-  },
-  {
-    title: "Oppenheimer Trailer",
-    youtubeId: "uYPbbksJxIg",
-  },
-];
+const trailers = inject("providers-movie");
 
 function openTrailer(youtubeId) {
   currentTrailer.value = youtubeId;

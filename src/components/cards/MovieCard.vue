@@ -1,7 +1,15 @@
 <template>
   <v-card class="rounded-lg" elevation="4" max-width="250">
     <!-- Poster -->
-    <v-img :src="image" height="250" cover class="rounded-t-lg"></v-img>
+    <router-link class="text-decoration-none" :to="link">
+      <v-img
+        :src="image"
+        width="500"
+        height="250"
+        cover
+        class="rounded-t-lg"
+      ></v-img>
+    </router-link>
 
     <!-- Info -->
     <v-card-title class="d-flex justify-space-between align-center">
@@ -10,7 +18,7 @@
       </div>
 
       <!-- Toggle menu -->
-      <v-menu>
+      <v-menu class="position-relative z-index-10" @click.stop>
         <template #activator="{ props }">
           <v-btn icon variant="text" v-bind="props">
             <v-icon>mdi-dots-vertical</v-icon>
@@ -61,6 +69,7 @@ defineProps({
   title: { type: String, default: "Judul Film" },
   date: { type: String, default: "2025-09-06" },
   score: { type: Number, default: 7.5 },
+  link: { type: String, default: "/" },
 });
 
 const userRating = ref(null);
@@ -75,3 +84,9 @@ const addToWatchlist = () => {
   alert("Film ditambahkan ke daftar tonton!");
 };
 </script>
+
+<style scoped>
+.z-index-10 {
+  z-index: 10;
+}
+</style>

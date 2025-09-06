@@ -5,79 +5,86 @@
         <search-bar class="w-100" />
       </hero-section>
 
-      <section class="trendings">
-        <v-container fluid>
-          <h2 class="mb-4">Popular Movies</h2>
-          <v-slide-group show-arrows class="pa-2">
-            <v-slide-group-item v-for="(movie, i) in movies" :key="i">
-              <movie-card
-                class="mx-2"
-                image="https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg"
-                title="The Batman"
-                date="2022-03-04"
-                :score="7.9"
-              />
-            </v-slide-group-item>
-          </v-slide-group>
-        </v-container>
-      </section>
+      <movie-section title="Trendings Movies" :loading="isLoading">
+        <v-slide-group-item v-for="item in trendingsMovie" :key="item.id">
+          <movie-card
+            class="mx-2"
+            :image="`${API_IMAGE_URL_W500}${item.backdrop_path}`"
+            :title="item.original_title"
+            :date="item.release_date"
+            :score="item.vote_average"
+          /> </v-slide-group-item
+      ></movie-section>
 
       <section class="latest-traillers">
         <latest-traillers></latest-traillers>
       </section>
 
-      <section class="popular">
-        <v-container fluid>
-          <h2 class="mb-4">Popular</h2>
-          <v-slide-group show-arrows class="pa-2">
-            <v-slide-group-item v-for="(movie, i) in movies" :key="i">
-              <movie-card
-                class="mx-2"
-                image="https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg"
-                title="The Batman"
-                date="2022-03-04"
-                :score="7.9"
-              />
-            </v-slide-group-item>
-          </v-slide-group>
-        </v-container>
-      </section>
+      <movie-section title="Popular Movies" :loading="isLoading">
+        <v-slide-group-item v-for="item in popularMovies" :key="item.id">
+          <movie-card
+            class="mx-2"
+            :image="`${API_IMAGE_URL_W500}${item.backdrop_path}`"
+            :title="item.original_title"
+            :date="item.release_date"
+            :score="item.vote_average"
+          />
+        </v-slide-group-item>
+      </movie-section>
 
-      <section class="popular">
-        <v-container fluid>
-          <h2 class="mb-4">Free to Watch</h2>
-          <v-slide-group show-arrows class="pa-2">
-            <v-slide-group-item v-for="(movie, i) in movies" :key="i">
-              <movie-card
-                class="mx-2"
-                image="https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg"
-                title="The Batman"
-                date="2022-03-04"
-                :score="7.9"
-              />
-            </v-slide-group-item>
-          </v-slide-group>
-        </v-container>
-      </section>
+      <movie-section title="Actors" :loading="isLoading">
+        <v-slide-group-item v-for="item in actorsMovies" :key="item.id">
+          <movie-card
+            class="mx-2"
+            :image="`${API_IMAGE_URL_W500}${item.profile_path}`"
+            :title="item.name"
+            :date="item.release_date"
+            :score="item.popularity"
+          />
+        </v-slide-group-item>
+      </movie-section>
     </v-app>
   </home-layout>
 </template>
 
 <script setup>
+import {
+  GetActorsMovie,
+  GetPopularMovies,
+  GetProvidersMovie,
+  GetTrendingMovies,
+} from "@/api/Movies.api";
 import HomeLayout from "@/layouts/HomeLayout.vue";
+import { API_IMAGE_URL_W500 } from "@/utils/const";
+import { onMounted, provide, ref } from "vue";
 
-const movies = [
-  { poster: "https://image.tmdb.org/t/p/w200/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/3bhkrj58Vtu7enYsRolD1fZdja1.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster3.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster4.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster5.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster5.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster5.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster5.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster5.jpg" },
-  { poster: "https://image.tmdb.org/t/p/w200/somePoster5.jpg" },
-];
+const popularMovies = ref([]);
+const trendingsMovie = ref([]);
+const actorsMovies = ref([]);
+const providersMovie = ref([]);
+const isLoading = ref(true);
+
+provide("providers-movie", providersMovie);
+
+onMounted(async () => {
+  isLoading.value = true;
+  try {
+    const [popular, trend, actors, providers] = await Promise.all([
+      GetPopularMovies(),
+      GetTrendingMovies(),
+      GetActorsMovie(),
+      GetProvidersMovie(),
+    ]);
+    popularMovies.value = popular.results;
+    trendingsMovie.value = trend.results;
+    actorsMovies.value = actors.results;
+    providersMovie.value = providers.results;
+  } catch (error) {
+    console.log({ error });
+  } finally {
+    isLoading.value = false;
+  }
+});
 </script>
 
 <style>
