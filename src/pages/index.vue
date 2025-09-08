@@ -5,14 +5,25 @@
         <search-bar class="w-100" />
       </hero-section>
 
-      <movie-section title="Trendings Movies" :loading="isLoading">
+      <movie-section
+        title="Trendings Movies"
+        :loading="isLoading.trending"
+        link="/trending-movies"
+        @handlePeriod="onHandlePeriod"
+        :button_switch="true"
+      >
         <v-slide-group-item v-for="item in trendingsMovie" :key="item.id">
           <movie-card
             class="mx-2"
             :image="`${API_IMAGE_URL_W500}${item.backdrop_path}`"
-            :title="item.original_title"
+            :title="item.original_title || item.name"
             :date="item.release_date"
             :score="item.vote_average"
+            :link="`${
+              item.media_type === 'movie'
+                ? `/movies/${item.id}`
+                : `/tv/${item.id}`
+            }`"
           /> </v-slide-group-item
       ></movie-section>
 
@@ -20,7 +31,7 @@
         <latest-traillers></latest-traillers>
       </section>
 
-      <movie-section title="Popular Movies" :loading="isLoading">
+      <movie-section title="Popular Movies" :loading="isLoading.popular">
         <v-slide-group-item v-for="item in popularMovies" :key="item.id">
           <movie-card
             class="mx-2"
@@ -32,7 +43,7 @@
         </v-slide-group-item>
       </movie-section>
 
-      <movie-section title="Actors" :loading="isLoading">
+      <movie-section title="Actors" :loading="isLoading.actors">
         <v-slide-group-item v-for="item in actorsMovies" :key="item.id">
           <movie-card
             class="mx-2"
@@ -40,6 +51,7 @@
             :title="item.name"
             :date="item.release_date"
             :score="item.popularity"
+            :link="`/actor/${item.id}`"
           />
         </v-slide-group-item>
       </movie-section>
@@ -56,22 +68,60 @@ import {
 } from "@/api/Movies.api";
 import HomeLayout from "@/layouts/HomeLayout.vue";
 import { API_IMAGE_URL_W500 } from "@/utils/const";
-import { onMounted, provide, ref } from "vue";
+import { onMounted, provide, ref, watch } from "vue";
 
+// STATES
 const popularMovies = ref([]);
 const trendingsMovie = ref([]);
 const actorsMovies = ref([]);
 const providersMovie = ref([]);
-const isLoading = ref(true);
+const periodTrending = ref("day");
+const isLoading = ref({
+  trending: true,
+  popular: true,
+  actors: true,
+  providers: true,
+});
+
+const onHandlePeriod = (value) => {
+  periodTrending.value = value;
+};
 
 provide("providers-movie", providersMovie);
 
+watch(periodTrending, async () => {
+  isLoading.value.trending = true;
+  try {
+    const newTrendingsMovie = await GetTrendingMovies(periodTrending.value);
+    trendingsMovie.value = newTrendingsMovie.results;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value.trending = false;
+  }
+});
+
+watch(periodTrending, async () => {
+  isLoading.value.trending = true;
+  try {
+    const newTrendingsMovie = await GetTrendingMovies(periodTrending.value);
+    trendingsMovie.value = newTrendingsMovie.results;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value.trending = false;
+  }
+});
+
 onMounted(async () => {
-  isLoading.value = true;
+  isLoading.value.popular = true;
+  isLoading.value.trending = true;
+  isLoading.value.actors = true;
+  isLoading.value.providers = true;
   try {
     const [popular, trend, actors, providers] = await Promise.all([
       GetPopularMovies(),
-      GetTrendingMovies(),
+      GetTrendingMovies(periodTrending.value),
       GetActorsMovie(),
       GetProvidersMovie(),
     ]);
@@ -82,7 +132,10 @@ onMounted(async () => {
   } catch (error) {
     console.log({ error });
   } finally {
-    isLoading.value = false;
+    isLoading.value.popular = false;
+    isLoading.value.trending = false;
+    isLoading.value.actors = false;
+    isLoading.value.providers = false;
   }
 });
 </script>

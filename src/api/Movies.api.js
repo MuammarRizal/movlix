@@ -42,3 +42,13 @@ export const GetProvidersMovie = async () => {
   });
   return data;
 };
+
+export const GetDetailMovie = async (id) => {
+  const { data } = await ApiInstance.get(`/movie/${id}`, {
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+    },
+  });
+
+  return data;
+};
