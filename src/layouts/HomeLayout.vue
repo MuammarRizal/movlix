@@ -1,7 +1,5 @@
 <template>
-  <v-app>
-    <Navigation />
-
+  <v-app class="position-relative">
     <v-main>
       <slot />
     </v-main>
@@ -11,3 +9,9 @@
 <script setup>
 //
 </script>
+
+<style>
+.z-index-10 {
+  z-index: 10;
+}
+</style>

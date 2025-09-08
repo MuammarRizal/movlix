@@ -2,12 +2,6 @@
   <v-app-bar app flat color="primary" dark>
     <!-- Logo -->
     <v-toolbar-title class="font-weight-bold d-flex align-center">
-      <!-- <img
-        src="https://i.pravatar.cc/300"
-        alt="Logo"
-        height="32"
-        class="mr-2"
-      /> -->
       MovieDB
     </v-toolbar-title>
 
