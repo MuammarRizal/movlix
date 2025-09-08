@@ -39,6 +39,7 @@
             :title="item.original_title"
             :date="item.release_date"
             :score="item.vote_average"
+            :link="`/movies/${item.id}`"
           />
         </v-slide-group-item>
       </movie-section>
@@ -51,7 +52,7 @@
             :title="item.name"
             :date="item.release_date"
             :score="item.popularity"
-            :link="`/actor/${item.id}`"
+            :link="`/actors/${item.id}`"
           />
         </v-slide-group-item>
       </movie-section>
@@ -61,11 +62,11 @@
 
 <script setup>
 import {
-  GetActorsMovie,
   GetPopularMovies,
   GetProvidersMovie,
   GetTrendingMovies,
 } from "@/api/Movies.api";
+import { GetActorsMovie } from "@/api/People.api";
 import HomeLayout from "@/layouts/HomeLayout.vue";
 import { API_IMAGE_URL_W500 } from "@/utils/const";
 import { onMounted, provide, ref, watch } from "vue";

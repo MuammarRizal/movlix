@@ -22,18 +22,6 @@ export const GetTrendingMovies = async (period = "day") => {
   return data;
 };
 
-export const GetActorsMovie = async () => {
-  const { data } = await ApiInstance.get(
-    `/person/popular?language=en-US&page=1`,
-    {
-      headers: {
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
-    }
-  );
-  return data;
-};
-
 export const GetProvidersMovie = async () => {
   const { data } = await ApiInstance.get(`/watch/providers/movie`, {
     headers: {
