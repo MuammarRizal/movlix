@@ -31,3 +31,26 @@ export const GetDetailTV = async (id) => {
 
   return data;
 };
+
+export const GetDetailTVSeason = async (tv_id, season_id) => {
+  const { data } = await ApiInstance.get(`/tv/${tv_id}/season/${season_id}`, {
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+    },
+  });
+
+  return data;
+};
+
+export const GetDetailTVEpisode = async (tv_id, season_id, episode_id) => {
+  const { data } = await ApiInstance.get(
+    `/tv/${tv_id}/season/${season_id}/episode/${episode_id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
+    }
+  );
+
+  return data;
+};

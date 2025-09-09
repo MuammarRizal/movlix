@@ -69,7 +69,7 @@
             md="4"
             lg="3"
           >
-            <router-link :to="`/tv/${tv.id}`">
+            <router-link :to="`/tv/${tv.id}`" class="text-decoration-none">
               <v-card class="tv-card" height="100%">
                 <v-img
                   :src="`${API_IMAGE_URL_ORIGINAL}${tv.poster_path}`"

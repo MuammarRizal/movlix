@@ -147,20 +147,25 @@
           sm="6"
           md="3"
         >
-          <v-card>
-            <v-img
-              :src="`https://image.tmdb.org/t/p/w300${season.poster_path}`"
-              height="200"
-              cover
-            />
-            <v-card-title>{{ season.name }}</v-card-title>
-            <v-card-subtitle>
-              {{ season.episode_count }} Episodes
-            </v-card-subtitle>
-            <v-card-text>
-              {{ season.overview }}
-            </v-card-text>
-          </v-card>
+          <router-link
+            :to="`/tv/${id}/season/${season.season_number}`"
+            class="text-decoration-none"
+          >
+            <v-card>
+              <v-img
+                :src="`https://image.tmdb.org/t/p/w300${season.poster_path}`"
+                height="200"
+                cover
+              />
+              <v-card-title>{{ season.name }}</v-card-title>
+              <v-card-subtitle>
+                {{ season.episode_count }} Episodes
+              </v-card-subtitle>
+              <v-card-text>
+                {{ season.overview }}
+              </v-card-text>
+            </v-card>
+          </router-link>
         </v-col>
       </v-row>
     </v-container>
