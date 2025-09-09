@@ -22,7 +22,7 @@
       <!-- Hasil Pencarian -->
       <v-col cols="12" md="9">
         <v-card class="pa-4">
-          <h3 class="mb-4">Hasil Pencarian: {{ selectedCategory }}</h3>
+          <h3 class="mb-4">Hasil Pencarian: {{ route.query.query }}</h3>
           <v-row>
             <v-col
               v-for="(result, index) in filteredResults"
@@ -89,6 +89,10 @@ const filteredResults = computed(() => {
 });
 
 onMounted(async () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
   try {
     const responseSearchAPI = await SearchMovieAPI(route.query.query);
     results.value = responseSearchAPI.results;

@@ -69,21 +69,23 @@
             md="4"
             lg="3"
           >
-            <v-card class="movie-card" height="100%">
-              <v-img
-                :src="`${API_IMAGE_URL_ORIGINAL}${movie.poster_path}`"
-                height="250"
-                cover
-              ></v-img>
-              <v-card-text>
-                <div class="text-subtitle-1 font-weight-medium">
-                  {{ movie.title }}
-                </div>
-                <div class="text-caption grey--text">
-                  ⭐ {{ movie.vote_average }}
-                </div>
-              </v-card-text>
-            </v-card>
+            <router-link :to="`/movies/${movie.id}`">
+              <v-card class="movie-card" height="100%">
+                <v-img
+                  :src="`${API_IMAGE_URL_ORIGINAL}${movie.poster_path}`"
+                  height="250"
+                  cover
+                ></v-img>
+                <v-card-text>
+                  <div class="text-subtitle-1 font-weight-medium">
+                    {{ movie.title }}
+                  </div>
+                  <div class="text-caption grey--text">
+                    ⭐ {{ movie.vote_average }}
+                  </div>
+                </v-card-text>
+              </v-card>
+            </router-link>
           </v-col>
         </v-row>
 
@@ -111,6 +113,7 @@ const page = ref(1);
 const isLoading = ref(false);
 const selectedGenre = ref(null);
 const genres = ref([]);
+const activeFilter = ref(null);
 
 const sortOptions = [
   { text: "Popularity Desc", value: "popularity.desc" },
@@ -120,9 +123,7 @@ const sortOptions = [
 ];
 
 async function applyFilters() {
-  console.log("Search:", search.value);
-  console.log("Sort:", sortBy.value);
-  console.log("Genre:", selectedGenre.value);
+  page.value = 1;
   isLoading.value = true;
   try {
     const responseSearch = await FilterDiscoverMovie(
@@ -131,6 +132,12 @@ async function applyFilters() {
       2020
     );
     movies.value = responseSearch.results;
+
+    activeFilter.value = {
+      sort: sortBy.value,
+      genre: selectedGenre.value,
+      year: 2020,
+    };
   } catch (error) {
     console.log(error);
   } finally {
@@ -139,11 +146,21 @@ async function applyFilters() {
 }
 
 async function loadMore() {
-  page.value = ++page.value;
+  page.value++;
   isLoading.value = true;
   try {
-    const responseLoadmore = await GetDiscoverMovie(page.value);
-    responseLoadmore.results.map((item) => movies.value.push(item));
+    if (activeFilter.value) {
+      const responseSearch = await FilterDiscoverMovie(
+        sortBy.value,
+        selectedGenre.value,
+        2020,
+        page.value
+      );
+      responseSearch.results.map((item) => movies.value.push(item));
+    } else {
+      const responseLoadmore = await GetDiscoverMovie(page.value);
+      responseLoadmore.results.map((item) => movies.value.push(item));
+    }
   } catch (error) {
     console.log(error);
   } finally {

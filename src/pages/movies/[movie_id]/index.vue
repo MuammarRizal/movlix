@@ -241,6 +241,10 @@ const isLoading = ref(true);
 const metaData = ref([]);
 
 onMounted(async () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
   isLoading.value = true;
   try {
     const responseApi = await GetDetailMovie(id);

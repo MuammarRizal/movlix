@@ -227,6 +227,10 @@ const tv = ref({});
 const isLoading = ref(true);
 
 onMounted(async () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
   isLoading.value = true;
   try {
     const response = await GetDetailTV(id);

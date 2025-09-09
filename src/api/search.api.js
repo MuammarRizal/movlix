@@ -11,7 +11,7 @@ export const SearchMovieAPI = async (query) => {
   return data;
 };
 
-export const FilterDiscoverMovie = async (sortby, genreId, year) => {
+export const FilterDiscoverMovie = async (sortby, genreId, year, page = 1) => {
   try {
     const params = {
       language: "en-US",
@@ -21,6 +21,7 @@ export const FilterDiscoverMovie = async (sortby, genreId, year) => {
     if (sortby) params.sort_by = sortby;
     if (genreId) params.with_genres = genreId;
     if (year) params.year = year;
+    if (page > 1) params.page = page;
 
     const { data } = await ApiInstance.get("/discover/movie", {
       headers: {

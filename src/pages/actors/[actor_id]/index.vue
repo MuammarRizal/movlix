@@ -92,6 +92,10 @@ const isLoading = ref(true);
 const actor = ref({});
 
 onMounted(async () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
   isLoading.value = true;
   try {
     const response = await GetActorDetail(id);
