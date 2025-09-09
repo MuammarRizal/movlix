@@ -7,7 +7,7 @@
           <h3 class="text-h6 font-weight-bold mb-3">Search & Filter</h3>
 
           <!-- Search -->
-          <v-text-field
+          <!-- <v-text-field
             v-model="search"
             label="Search Movies"
             prepend-inner-icon="mdi-magnify"
@@ -15,13 +15,15 @@
             outlined
             hide-details
             class="mb-4"
-          />
+          /> -->
 
           <!-- Sort -->
           <v-select
             v-model="sortBy"
-            :items="sortOptions"
             label="Sort By"
+            :items="sortOptions"
+            item-title="text"
+            item-value="value"
             dense
             outlined
             hide-details
@@ -41,9 +43,18 @@
           />
 
           <!-- Apply Button -->
-          <v-btn block color="primary" class="mt-4" @click="applyFilters">
-            Apply Filters
-          </v-btn>
+          <div>
+            <loading-custom v-if="isLoading" class="mt-2" />
+            <v-btn
+              v-else
+              block
+              color="primary"
+              class="mt-4"
+              @click="applyFilters"
+            >
+              Apply Filters
+            </v-btn>
+          </div>
         </v-card>
       </v-col>
 
@@ -60,7 +71,7 @@
           >
             <v-card class="movie-card" height="100%">
               <v-img
-                :src="`${IMAGE_BASE}${movie.poster_path}`"
+                :src="`${API_IMAGE_URL_ORIGINAL}${movie.poster_path}`"
                 height="250"
                 cover
               ></v-img>
@@ -89,11 +100,17 @@
 <script setup>
 import { GetListGenre } from "@/api/Lists.api";
 import { GetDiscoverMovie } from "@/api/Movies.api";
+import { FilterDiscoverMovie, SearchMovieAPI } from "@/api/search.api";
+import { API_IMAGE_URL_ORIGINAL } from "@/utils/const";
 import { onMounted, ref } from "vue";
 
 const search = ref("");
-const sortBy = ref("popularity.desc");
+const sortBy = ref(null);
+const movies = ref([]);
+const page = ref(1);
+const isLoading = ref(false);
 const selectedGenre = ref(null);
+const genres = ref([]);
 
 const sortOptions = [
   { text: "Popularity Desc", value: "popularity.desc" },
@@ -102,18 +119,23 @@ const sortOptions = [
   { text: "Rating Asc", value: "vote_average.asc" },
 ];
 
-const genres = ref([]);
-
-const movies = ref([]);
-const page = ref(1);
-const isLoading = ref(false);
-
-const IMAGE_BASE = "https://image.tmdb.org/t/p/w300";
-
-function applyFilters() {
+async function applyFilters() {
   console.log("Search:", search.value);
   console.log("Sort:", sortBy.value);
   console.log("Genre:", selectedGenre.value);
+  isLoading.value = true;
+  try {
+    const responseSearch = await FilterDiscoverMovie(
+      sortBy.value,
+      selectedGenre.value,
+      2020
+    );
+    movies.value = responseSearch.results;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 async function loadMore() {

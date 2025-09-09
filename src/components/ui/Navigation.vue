@@ -66,6 +66,7 @@
     <v-text-field
       v-model="search"
       placeholder="Search..."
+      @keyup.enter="onKeyUp"
       hide-details
       dense
       flat
@@ -79,7 +80,9 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const search = ref("");
 
 function onAddMovie() {
@@ -92,6 +95,16 @@ function onAddSeries() {
 
 function toggleLanguage() {
   console.log("Ganti bahasa diklik");
+}
+
+function onKeyUp() {
+  console.log(search.value);
+  router.push({
+    path: "/search",
+    query: {
+      query: search.value,
+    },
+  });
 }
 </script>
 
