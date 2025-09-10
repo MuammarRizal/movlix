@@ -139,7 +139,10 @@
           </v-col>
 
           <v-col v-for="ep in episodes" :key="ep.id" cols="12" class="mb-4">
-            <router-link to="ep." class="text-decoration-none">
+            <router-link
+              :to="`/tv/${tv_id}/season/${season_id}/episode/${ep.episode_number}`"
+              class="text-decoration-none"
+            >
               <v-card class="episode-card" elevation="8">
                 <v-row no-gutters>
                   <v-col cols="12" md="4">
